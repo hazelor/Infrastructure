@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{9AC4011A-F9AA-46EF-BD64-C3406C60B0A1}</ProjectGuid>
+    <ProjectGuid>{A4B2DC73-FD2B-445B-AD31-DF899349659E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Hazelor.Infrastructure.Communications</RootNamespace>
-    <AssemblyName>Hazelor.Infrastructure.Communications</AssemblyName>
+    <RootNamespace>Hazelor.Infrastructure.Tools</RootNamespace>
+    <AssemblyName>Hazelor.Infrastructure.Tools</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -42,9 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IChannelService.cs" />
-    <Compile Include="NetChannelService.cs" />
-    <Compile Include="SerialChannelService.cs" />
+    <Compile Include="PreciseTimer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
