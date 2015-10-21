@@ -60,9 +60,12 @@
     <Reference Include="Microsoft.Practices.ServiceLocation">
       <HintPath>..\packages\CommonServiceLocator.1.2\lib\portable-windows8+net40+sl5+windowsphone8\Microsoft.Practices.ServiceLocation.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -72,6 +75,24 @@
   <ItemGroup>
     <Compile Include="AutoPopulateExportedViewsBehavior.cs" />
     <Compile Include="EnterpriseLibraryLoggerAdapter.cs" />
+    <Compile Include="FrameworkDialogs\DialogService.cs" />
+    <Compile Include="FrameworkDialogs\FileDialogViewModel.cs" />
+    <Compile Include="FrameworkDialogs\FoldBrowse\FolderBrowserDialog.cs" />
+    <Compile Include="FrameworkDialogs\FoldBrowse\FolderBrowserDialogViewModel.cs" />
+    <Compile Include="FrameworkDialogs\FoldBrowse\IFolderBrowserDialog.cs" />
+    <Compile Include="FrameworkDialogs\IDialogService.cs" />
+    <Compile Include="FrameworkDialogs\IDialogServiceContract.cs" />
+    <Compile Include="FrameworkDialogs\IFileDialog.cs" />
+    <Compile Include="FrameworkDialogs\OpenFile\IOpenFileDialog.cs" />
+    <Compile Include="FrameworkDialogs\OpenFile\OpenFileDialog.cs" />
+    <Compile Include="FrameworkDialogs\OpenFile\OpenFileDialogViewModel.cs" />
+    <Compile Include="FrameworkDialogs\SaveFile\ISaveFileDialog.cs" />
+    <Compile Include="FrameworkDialogs\SaveFile\SaveFileDialog.cs" />
+    <Compile Include="FrameworkDialogs\SaveFile\SaveFileDialogViewModel.cs" />
+    <Compile Include="FrameworkDialogs\WindowViewModelMapping\IWindowViewModelMappings.cs" />
+    <Compile Include="FrameworkDialogs\WindowViewModelMapping\IWindowViewModelMappingsContract.cs" />
+    <Compile Include="FrameworkDialogs\WindowViewModelMapping\WindowViewModelMappings.cs" />
+    <Compile Include="FrameworkDialogs\WindowWrapper.cs" />
     <Compile Include="ISerialize.cs" />
     <Compile Include="ISerializeModel.cs" />
     <Compile Include="IViewRegionRegistration.cs" />
@@ -82,6 +103,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
