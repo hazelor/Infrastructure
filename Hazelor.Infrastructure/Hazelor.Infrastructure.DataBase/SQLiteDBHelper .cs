@@ -20,21 +20,26 @@ namespace Hazelor.Infrastructure.DataBase
             this.connectionString = "Data Source=" + dbPath;
         }
 
+        public SQLiteDBHelper()
+        {
+
+        }
         /// <summary> 
         /// 创建SQLite数据库文件 
         /// </summary> 
         /// <param name="dbPath">要创建的SQLite数据库文件路径</param> 
-        public static void CreateDB(string dbPath)
+        public void CreateDB(string dbPath)
         {
+            connectionString = "Data Source=" + dbPath;
             using (SQLiteConnection connection = new SQLiteConnection("Data Source=" + dbPath))
             {
                 connection.Open();
                 using (SQLiteCommand command = new SQLiteCommand(connection))
                 {
-                    command.CommandText = "CREATE TABLE Demo(id integer NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE)";
-                    command.ExecuteNonQuery();
-                    command.CommandText = "DROP TABLE Demo";
-                    command.ExecuteNonQuery();
+                    //command.CommandText = "CREATE TABLE Demo(id integer NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE)";
+                    //command.ExecuteNonQuery();
+                    //command.CommandText = "DROP TABLE Demo";
+                    //command.ExecuteNonQuery();
                 }
             }
         }
