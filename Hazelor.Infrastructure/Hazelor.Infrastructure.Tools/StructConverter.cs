@@ -43,7 +43,7 @@ namespace Hazelor.Infrastructure.Tools
             BytesToStruct(buf, buf.Length, rtn);
         }
 
-        public object BytesToStruct(byte[] buf, Type type)
+        public static object BytesToStruct(byte[] buf, Type type)
         {
             return BytesToStruct(buf, buf.Length, type);
         }
