@@ -22,21 +22,11 @@ namespace InsTest
     /// </summary>
     public partial class MainWindow : Window
     {
-        private IUdpClientService _cS;
         public MainWindow()
         {
             InitializeComponent();
-            //_cS = new UdpClientService();
-            //_cS.Register(test);
+            this.DataContext = new MainWindowVMTcpClient();
 
         }
-
-        public void test(object sender, DataReceivedEventArgs e)
-        {
-
-        }
-
     }
-
-
 }

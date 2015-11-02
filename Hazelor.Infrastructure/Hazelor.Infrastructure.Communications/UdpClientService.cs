@@ -44,7 +44,7 @@ namespace Hazelor.Infrastructure.Communications
         {
             _listenPort = LocalPort;
             _remotePort = RemotePort;
-            _ipEndPoint = new IPEndPoint(Dns.GetHostAddresses(Dns.GetHostName())[0], _listenPort);
+            _ipEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), _listenPort);
             _remoteEP = new IPEndPoint(IPAddress.Parse(RemoteIpAddress), RemotePort);
             if (_isStarted == true)
             {

@@ -12,8 +12,8 @@ namespace Hazelor.Infrastructure.Communications.Interface
         void InitializeConfiguration(int LocalPort);
         void Register(EventHandler<TcpDatagramReceivedEventArgs<byte[]>> eventHandler);
         void Unregister(EventHandler<TcpDatagramReceivedEventArgs<byte[]>> eventHandler);
-        void Connect(string RemoteIpAddress, int RemotePort);
-        void Disconnect();
+        bool Connect(string RemoteIpAddress, int RemotePort);
+        bool Disconnect();
         void SendData(byte[] data);
         void Dispose();
 
