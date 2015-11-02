@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Hazelor.Infrastructure.Communications.Events
 {
-    public class ClientDisconnectedEventArgs:EventArgs
+    public class ClientDisconnectedEventArgs : EventArgs
     {
         public TcpClient tcpClient { get; set; }
 

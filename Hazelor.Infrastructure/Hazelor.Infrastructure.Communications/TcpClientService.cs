@@ -19,6 +19,7 @@ namespace Hazelor.Infrastructure.Communications
         private int _localPort;
         private int _remotePort;
         private TcpClient _localClient;
+
         //private UdpClient _sendClient;
 
         //private const int BUFFERSIZE = 1024;
@@ -31,13 +32,19 @@ namespace Hazelor.Infrastructure.Communications
         //private bool isconnecting = false;
         //private bool disposed = false;
 
-
         private event EventHandler<TcpDatagramReceivedEventArgs<byte[]>> DatagramReceivedEvent;
+
+        public TcpClientService()
+        {
+            _localPort = 0;
+            InitializeConfiguration(_localPort);
+        }
 
         public TcpClientService(int LocalPort)
         {
             InitializeConfiguration(LocalPort);
         }
+
         public void InitializeConfiguration(int LocalPort)
         {
             _localPort = LocalPort;
@@ -48,11 +55,17 @@ namespace Hazelor.Infrastructure.Communications
             _localEP = new IPEndPoint(IPAddress.Parse("127.0.0.1"), _localPort);
             if (_localClient != null)
             {
-                //StopService();
-                Dispose();
-
+                try
+                {
+                    Disconnect();
+                    Dispose();
+                }
+                catch (Exception e)
+                {
+                    throw e;
+                }
             }
-            _localClient = new TcpClient(_localEP);
+            //_localClient = new TcpClient(_localEP);
         }
 
         public void Register(EventHandler<TcpDatagramReceivedEventArgs<byte[]>> eventHandler)
@@ -73,25 +86,37 @@ namespace Hazelor.Infrastructure.Communications
         {
             if (_localClient != null)
             {
-                _remotePort = RemotePort;
-                _remoteEP = new IPEndPoint(IPAddress.Parse(RemoteIpAddress), _remotePort);
-                if (_localClient.Connected)
-                {
-                    Disconnect();
-                }
                 try
                 {
-                    _localClient.Connect(_remoteEP);
-                    //return true;
+                    Disconnect();
+                    Dispose();
                 }
                 catch (Exception e)
                 {
                     throw e;
                 }
-                return _localClient.Connected;
             }
-            return false;
-            
+            _localClient = new TcpClient(_localEP = new IPEndPoint(IPAddress.Parse("127.0.0.1"), _localPort)); 
+            _remotePort = RemotePort;
+            _remoteEP = new IPEndPoint(IPAddress.Parse(RemoteIpAddress), _remotePort);
+            //if (_localClient.Connected)
+            //{
+            //    Disconnect();
+            //}
+            try
+            {
+                _localClient.Connect(_remoteEP);
+                //_localClient.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+
+                StartListening();
+                //return true;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+            return _localClient.Connected;
+            //return false;
             // TODO: Implement this  
             //throw new NotImplementedException();
         }
@@ -102,7 +127,10 @@ namespace Hazelor.Infrastructure.Communications
             {
                 if (_localClient.Connected)
                 {
+                    //_localClient.Client.Shutdown(SocketShutdown.Both);
                     _localClient.Client.Disconnect(true);
+                    _localClient.Client.Close();
+                    _localClient.Client.Dispose();
                     //return true;
                 }
                 return !_localClient.Connected;
@@ -110,7 +138,17 @@ namespace Hazelor.Infrastructure.Communications
             return true;
             // TODO: Implement this method
             //throw new NotImplementedException();
-            
+        }
+
+        private void StartListening()
+        {
+            NetworkStream networkStream = _localClient.GetStream();
+            NetworkStreamState networkStreamState = new NetworkStreamState()
+            {
+                networkStream = networkStream,
+                buffer = new byte[1024]
+            };
+            networkStream.BeginRead(networkStreamState.buffer, 0, networkStreamState.buffer.Length, OnDataReadCompleted, networkStreamState);
         }
 
         //public byte[] ReadBytes(int bufIndex, out int readbufSize)
@@ -140,12 +178,11 @@ namespace Hazelor.Infrastructure.Communications
         private void OnDataSendCompleted(IAsyncResult AsyncResult)
         {
             NetworkStream networkStream = (NetworkStream)AsyncResult.AsyncState;
-            NetworkStreamState networkStreamState = new NetworkStreamState(){
-                networkStream = networkStream,
-                buffer = new byte[1024]
-            };
+            //NetworkStreamState networkStreamState = new NetworkStreamState(){
+            //    networkStream = networkStream,
+            //    buffer = new byte[1024]
+            //};
             networkStream.EndWrite(AsyncResult);
-            networkStream.BeginRead(networkStreamState.buffer, 0, networkStreamState.buffer.Length, OnDataReadCompleted, networkStreamState);
         }
 
         private void OnDataReadCompleted(IAsyncResult AsyncResult)
@@ -162,10 +199,10 @@ namespace Hazelor.Infrastructure.Communications
             }
             if (numberOfReadBytes == 0)
             {
-                networkStreamState.networkStream.Close(0);
+                //networkStreamState.networkStream.Close(0);
                 return;
             }
-            networkStreamState.networkStream.Close(0);
+            //networkStreamState.networkStream.Close(0);
             byte[] receivedBytes = new byte[numberOfReadBytes];
             Buffer.BlockCopy(networkStreamState.buffer, 0, receivedBytes, 0, numberOfReadBytes);
             if (DatagramReceivedEvent != null)
@@ -184,7 +221,7 @@ namespace Hazelor.Infrastructure.Communications
                     }
                 }
             }
-
+            networkStreamState.networkStream.BeginRead(networkStreamState.buffer, 0, networkStreamState.buffer.Length, OnDataReadCompleted, networkStreamState);
         }
 
         private void OnReceivedDatagramProcessComplete(IAsyncResult AsyncResult)

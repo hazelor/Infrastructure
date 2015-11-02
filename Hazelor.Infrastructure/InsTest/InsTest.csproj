@@ -82,6 +82,7 @@
   <ItemGroup>
     <Compile Include="MainWindowVMTcpClient.cs" />
     <Compile Include="MainWindowVMTcpListener.cs" />
+    <Compile Include="MainWindowVMUdpClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

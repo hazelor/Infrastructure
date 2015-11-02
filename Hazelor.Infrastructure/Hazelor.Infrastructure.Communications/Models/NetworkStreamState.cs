@@ -10,6 +10,7 @@ namespace Hazelor.Infrastructure.Communications.Models
     public class NetworkStreamState
     {
         public NetworkStream networkStream { get; set; }
+
         public byte[] buffer { get; set; }
     }
 }

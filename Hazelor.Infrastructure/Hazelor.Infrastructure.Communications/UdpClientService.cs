@@ -15,9 +15,9 @@ namespace Hazelor.Infrastructure.Communications
     {
         private IPEndPoint _ipEndPoint;
         private IPEndPoint _remoteEP;
-        private int _listenPort;
+        private int _localPort;
         private int _remotePort;
-        private UdpClient _listenClient;
+        //private UdpClient _listenClient;
         private UdpClient _sendClient;
 
         private const int BUFFERSIZE = 1024;
@@ -42,31 +42,30 @@ namespace Hazelor.Infrastructure.Communications
 
         public void InitializeConfiguration(string RemoteIpAddress, int RemotePort, int LocalPort)
         {
-            _listenPort = LocalPort;
+            _localPort = LocalPort;
             _remotePort = RemotePort;
-            _ipEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), _listenPort);
+            _ipEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), LocalPort);
             _remoteEP = new IPEndPoint(IPAddress.Parse(RemoteIpAddress), RemotePort);
             if (_isStarted == true)
             {
                 StopService();
             }
-            try
-            {
-                _listenClient = new UdpClient(_ipEndPoint);
-                _sendClient = new UdpClient(_remoteEP);
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
+            //try
+            //{
+            //    //_listenClient = new UdpClient(_ipEndPoint);
+            //    //_sendClient = new UdpClient(_remoteEP);
+            //    _sendClient = new UdpClient(_ipEndPoint);
+            //}
+            //catch (Exception e)
+            //{
+            //    throw e;
+            //}
             //_sendClient.Connect(_remoteEP);
             //_sendClient.Send(_buffer[1], _bufferContentLengthArray.Length);
         }
 
         private void InitializeBuffer()
         {
-
-
             _buffer = new byte[BUFCOUNT][];
             for (int i = 0; i < BUFCOUNT; i++)
             {
@@ -87,14 +86,17 @@ namespace Hazelor.Infrastructure.Communications
 
         public void StartService()
         {
+            if (_isStarted)
+            {
+                StopService();
+            }
             // TODO: Implement this method
             try
             {
-                if (_isStarted != true)
-                {
-                    StartListening();
-                    _isStarted = true;
-                }
+                _sendClient = new UdpClient(_ipEndPoint);
+                _sendClient.Connect(_remoteEP);
+                _isStarted = true;
+                StartListening();
             }
             catch (Exception e)
             {
@@ -104,33 +106,53 @@ namespace Hazelor.Infrastructure.Communications
 
         public void StopService()
         {
+            _isStarted = false;
+
             // TODO: Implement this method
             //throw new NotImplementedException();
-            if (_listenClient != null && _sendClient != null)
+            if (_sendClient != null)
             {
-                _listenClient.Close();
-                _sendClient.Close();
-                _isStarted = false;
+                try
+                {
+                    //_listenClient.Close();
+                    _sendClient.Close();
+                    _sendClient = null;
+                }
+                catch (Exception e)
+                {
+                    throw e;
+                }
             }
         }
 
         private void StartListening()
         {
-            _listenClient.BeginReceive(StopListening, new object());
+            if (_sendClient != null)
+            {
+                _sendClient.BeginReceive(StopListening, _sendClient);     
+            }
         }
 
         private void StopListening(IAsyncResult AsyncResult)
         {
-            _tempBuffer = _listenClient.EndReceive(AsyncResult, ref _ipEndPoint);
-            if (_tempBuffer.Length != 0)
+            try
             {
-                _bufferContentLength = _tempBuffer.Length;
-                _bufferContentLengthArray[_bufferIndex] = _bufferContentLength;
-                Buffer.BlockCopy(_tempBuffer, 0, _buffer[_bufferIndex], 0, _bufferContentLength);
-                OnDataReceived(new DataReceivedEventArgs() { Content = _tempBuffer, BufferIndex = _bufferIndex });
-                _bufferIndex = (++_bufferIndex) % BUFCOUNT;
+                UdpClient tcpClient = (UdpClient)AsyncResult.AsyncState;
+                _tempBuffer = tcpClient.EndReceive(AsyncResult, ref _remoteEP);
+                if (_tempBuffer.Length != 0)
+                {
+                    _bufferContentLength = _tempBuffer.Length;
+                    _bufferContentLengthArray[_bufferIndex] = _bufferContentLength;
+                    Buffer.BlockCopy(_tempBuffer, 0, _buffer[_bufferIndex], 0, _bufferContentLength);
+                    OnDataReceived(new DataReceivedEventArgs() { Content = _tempBuffer, BufferIndex = _bufferIndex });
+                    _bufferIndex = (++_bufferIndex) % BUFCOUNT;
+                }
+                StartListening();
             }
-            StartListening();
+            catch (Exception e)
+            {
+                return;
+            }
         }
 
         public byte[] ReadBytes(int bufIndex, out int readbufSize)
@@ -163,7 +185,7 @@ namespace Hazelor.Infrastructure.Communications
                     }
                     catch (Exception e)
                     {
-                        throw;
+                        throw e;
                     }
                 }
             }

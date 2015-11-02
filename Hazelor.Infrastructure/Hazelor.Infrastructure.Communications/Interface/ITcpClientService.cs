@@ -10,12 +10,17 @@ namespace Hazelor.Infrastructure.Communications.Interface
     public interface ITcpClientService
     {
         void InitializeConfiguration(int LocalPort);
-        void Register(EventHandler<TcpDatagramReceivedEventArgs<byte[]>> eventHandler);
-        void Unregister(EventHandler<TcpDatagramReceivedEventArgs<byte[]>> eventHandler);
-        bool Connect(string RemoteIpAddress, int RemotePort);
-        bool Disconnect();
-        void SendData(byte[] data);
-        void Dispose();
 
+        void Register(EventHandler<TcpDatagramReceivedEventArgs<byte[]>> eventHandler);
+
+        void Unregister(EventHandler<TcpDatagramReceivedEventArgs<byte[]>> eventHandler);
+
+        bool Connect(string RemoteIpAddress, int RemotePort);
+
+        bool Disconnect();
+
+        void SendData(byte[] data);
+
+        void Dispose();
     }
 }

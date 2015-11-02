@@ -1,16 +1,18 @@
-﻿using System;
-using System.Linq;
+﻿using Hazelor.Infrastructure.Communications;
 using Hazelor.Infrastructure.Communications.Events;
 using Hazelor.Infrastructure.Communications.Interface;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.Mvvm;
-using Hazelor.Infrastructure.Communications;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace InsTest
 {
-    class MainWindowVMTcpClient : BindableBase
+    class MainWindowVMUdpClient : BindableBase
     {
-        private Random random;
         private string _receivetext;
 
         public string receivetext
@@ -60,22 +62,18 @@ namespace InsTest
 
         public DelegateCommand Send { get; set; }
 
-        private ITcpClientService tcpListenService = new TcpClientService(0);
+        private IUdpClientService udpClientService = new UdpClientService("127.0.0.1", 60000, 11000);
         
         private void start()
         {
-            int port = random.Next(11000, 12000);
-            tcpListenService.InitializeConfiguration(port);
-            isrunning = tcpListenService.Connect("127.0.0.1", 60000);
-            //isrunning = true;
+            udpClientService.StartService();
+            isrunning = true;
         }
 
         private void stop()
         {
-            //tcpListenService.Unregister(OnDataReceived);
-            isrunning = !tcpListenService.Disconnect();
-            //isrunning = false;
-            //tcpListenService.Dispose();
+            udpClientService.StopService();
+            isrunning = false;
         }
 
         private void send()
@@ -84,8 +82,8 @@ namespace InsTest
             {
                 if (sendtext != "")
                 {
-                    byte[] sendytes = System.Text.Encoding.Default.GetBytes(sendtext);
-                    tcpListenService.SendData(sendytes);
+                    byte[] sendbytes = System.Text.Encoding.Default.GetBytes(sendtext);
+                    udpClientService.SendData(sendbytes);
                 }
             }
             //tcpListenService.Unregister(OnDataReceived);
@@ -94,9 +92,9 @@ namespace InsTest
             //tcpListenService.Dispose();
         }
 
-        private void OnDataReceived(object sender, TcpDatagramReceivedEventArgs<byte[]> e)
+        private void OnDataReceived(object sender, DataReceivedEventArgs e)
         {
-            byte[] content = e.datagram;
+            byte[] content = e.Content;
             string str = System.Text.Encoding.Default.GetString(content);
             //Encoding encoding = Encoding.UTF8;
             //string contentstring = encoding.GetString(content, 0, content.Length);
@@ -104,10 +102,9 @@ namespace InsTest
             //byte[] sendbackdata = new byte[] { 0xeb, 0x90 };
         }
 
-        public MainWindowVMTcpClient()
+        public MainWindowVMUdpClient()
         {
-            random = new Random();
-            tcpListenService.Register(OnDataReceived);
+            udpClientService.Register(OnDataReceived);
             this.isrunning = false;
             this.receivetext = "";
             this.sendtext = "";

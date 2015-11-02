@@ -10,11 +10,13 @@ namespace Hazelor.Infrastructure.Communications.Models
     public class TcpClientState
     {
         private const int _bufferSize = 1024;
+
         public TcpClient tcpClient { get; set; }
 
         public NetworkStream networkStream { get; set; }
 
         public byte[] buffer { get; set; }
+
         public TcpClientState(TcpClient tcpClient)
         {
             this.tcpClient = tcpClient;

@@ -62,7 +62,6 @@ namespace InsTest
             //tcpListenService.Dispose();
         }
 
-
         private void OnDataReceived(object sender, TcpDatagramReceivedEventArgs<byte[]> e)
         {
             byte[] content = e.datagram;
@@ -70,9 +69,10 @@ namespace InsTest
             //Encoding encoding = Encoding.UTF8;
             //string contentstring = encoding.GetString(content, 0, content.Length);
             this.receivetext = str;
-            byte[] sendbackdata = new byte[] { 0xeb, 0x90};
+            byte[] sendbackdata = new byte[] { 0xeb, 0x90 };
             tcpListenService.SendData(e.tcpClient, sendbackdata);
         }
+
         public MainWindowVMTcpListener()
         {
             tcpListenService.Register(OnDataReceived);

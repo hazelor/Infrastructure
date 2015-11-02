@@ -25,7 +25,7 @@ namespace InsTest
         public MainWindow()
         {
             InitializeComponent();
-            this.DataContext = new MainWindowVMTcpClient();
+            this.DataContext = new MainWindowVMUdpClient();
 
         }
     }
