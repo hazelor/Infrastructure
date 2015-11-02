@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Hazelor.Infrastructure.Communications
 {
-    public class SerialChannelService : IChannelService
+    class SerialChannelService
     {
     }
 }

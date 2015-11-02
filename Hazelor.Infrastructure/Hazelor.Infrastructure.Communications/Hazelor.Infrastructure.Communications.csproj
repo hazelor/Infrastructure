@@ -42,11 +42,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IChannelService.cs" />
+    <Compile Include="EventArgs\ClientConnectedEventArgs.cs" />
+    <Compile Include="EventArgs\ClientDisconnectedEventArgs.cs" />
+    <Compile Include="EventArgs\DataReceivedEventArgs.cs" />
+    <Compile Include="EventArgs\TcpDatagramReceivedEventArgs.cs" />
+    <Compile Include="Interface\ITcpClientService.cs" />
+    <Compile Include="Interface\ITcpListenerService.cs" />
+    <Compile Include="Interface\IUdpClientService.cs" />
+    <Compile Include="Models\NetworkStreamState.cs" />
+    <Compile Include="Models\TcpClientState.cs" />
     <Compile Include="NetChannelService.cs" />
     <Compile Include="SerialChannelService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TcpClientService.cs" />
+    <Compile Include="TcpListenerService.cs" />
+    <Compile Include="UdpClientService.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

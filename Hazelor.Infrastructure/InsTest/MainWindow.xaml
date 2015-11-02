@@ -1,0 +1,22 @@
+﻿<Window x:Class="InsTest.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:convert="clr-namespace:InsTest"
+        Title="MainWindow" Height="350" Width="525">
+    <Window.Resources>
+        <convert:BoolConvert x:Key="boolconvert"/>
+    </Window.Resources>
+    <Grid>
+        <StackPanel>
+            <Button IsEnabled="{Binding isrunning,Converter={StaticResource boolconvert}}" Command="{Binding Start}">开始</Button>
+            <Button Command="{Binding Stop}" IsEnabled="{Binding isrunning}">结束</Button>
+            <Button Command="{Binding Send}" IsEnabled="{Binding isrunning}">发送</Button>
+            <Border Background="Gray">
+                <TextBlock Text="{Binding receivetext}"></TextBlock>
+            </Border>
+            <Border Background="Green">
+                <TextBox Text="{Binding sendtext}"></TextBox>
+            </Border>          
+        </StackPanel>
+    </Grid>
+</Window>
